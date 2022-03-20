@@ -1,5 +1,6 @@
-# Created by: Kasra Amani
-# Student ID: 98101171
+# Created by:
+# 1. Kasra Amani: 98101171
+# 2. Sara Zahedi: 98xxxxxx
 import scanner
 
 scanner.initiate_lexical_errors_file(scanner.lex_errors_address)
