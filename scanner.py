@@ -264,6 +264,13 @@ def keyword_or_id_state():
             if re.match(white_space_rexp, input_stream[input_stream_pointer]):
                 input_stream_pointer += 1
             return
+        elif re.match(valid_inputs, input_stream[input_stream_pointer]):
+            if re.match(keywords, keyword_or_id):
+                update_tokens(current_line, keyword_or_id, "KEYWORD")
+            else:
+                update_tokens(current_line, keyword_or_id, "ID")
+            update_symbol_table(keyword_or_id)
+            return
         else:
             update_errors(current_line, keyword_or_id + input_stream[input_stream_pointer], "Invalid input")
             error_raised = True
