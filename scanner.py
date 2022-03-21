@@ -116,15 +116,11 @@ def get_input_stream_from_input(address):
 def check_white_space(char):
     if char == "\n":
         global current_line
-        tokens.append([])
-        lexical_errors.append([])
         current_line += 1
     return re.match(white_space_rexp, char)
 
 
 def start_state():
-    if re.match(valid_inputs, '$'):
-        print('here')
     global error_raised, input_stream_pointer, new_token, eof_flag, unseen_token
     if input_stream_pointer >= len(input_stream):
         eof_flag = True
@@ -132,10 +128,10 @@ def start_state():
         return
     while input_stream_pointer in range(len(input_stream)):
         if check_white_space(input_stream[input_stream_pointer]):
+            input_stream_pointer += 1
             if not input_stream_pointer in range(len(input_stream)):
                 eof_flag = True
                 return
-            input_stream_pointer += 1
             continue
         if re.match(symbol_rexp, input_stream[input_stream_pointer]):
             symbol_state()
@@ -158,7 +154,6 @@ def start_state():
 
 def symbol_state():
     global input_stream_pointer, error_raised, eof_flag, unseen_token, emergency_flag
-    #print(f'{current_line}. {input_stream[input_stream_pointer]}')
     if not (input_stream_pointer + 1 in range(len(input_stream))):
         update_tokens(current_line, input_stream[input_stream_pointer], "SYMBOL")
         input_stream_pointer += 1
@@ -166,7 +161,6 @@ def symbol_state():
         eof_flag = True
         return
     if not re.match(valid_inputs, input_stream[input_stream_pointer + 1]):
-        #print(input_stream[input_stream_pointer + 1])
         if input_stream[input_stream_pointer] == "=" or input_stream[input_stream_pointer] == "*":
             update_errors(current_line, input_stream[input_stream_pointer] + input_stream[input_stream_pointer + 1],
                           "Invalid "
@@ -225,7 +219,7 @@ def num_state():
             num += '.'
             input_stream_pointer += 1
             continue
-        elif re.match(alphabet_rexp, input_stream[input_stream_pointer]):
+        elif re.match(alphabet_rexp, input_stream[input_stream_pointer]) or not re.match(valid_inputs, input_stream[input_stream_pointer]):
             update_errors(current_line, num + input_stream[input_stream_pointer], "Invalid number")
             error_raised = True
             input_stream_pointer += 1
@@ -254,15 +248,16 @@ def keyword_or_id_state():
             keyword_or_id += input_stream[input_stream_pointer]
             input_stream_pointer += 1
             continue
-        elif re.match(symbol_rexp, input_stream[input_stream_pointer]) or check_white_space(
-                input_stream[input_stream_pointer]):
+        elif re.match(symbol_rexp, input_stream[input_stream_pointer]) or re.match(white_space_rexp,
+                                                                                   input_stream[input_stream_pointer]):
+            if re.match(white_space_rexp, input_stream[input_stream_pointer]):
+                input_stream_pointer += 1
             if re.match(keywords, keyword_or_id):
                 update_tokens(current_line, keyword_or_id, "KEYWORD")
             else:
                 update_tokens(current_line, keyword_or_id, "ID")
             update_symbol_table(keyword_or_id)
-            if re.match(white_space_rexp, input_stream[input_stream_pointer]):
-                input_stream_pointer += 1
+            check_white_space(input_stream[input_stream_pointer])
             return
         elif re.match(valid_inputs, input_stream[input_stream_pointer]):
             if re.match(keywords, keyword_or_id):
