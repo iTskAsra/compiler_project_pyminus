@@ -842,7 +842,7 @@ class parse_table:
             '**': '',
             'NUM': '',
             'dollar_sign': ''
-        },
+        }
     }
     def parse(self, nt, t):
         pass
