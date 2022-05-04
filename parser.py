@@ -134,13 +134,13 @@ class FirstAndFollowSets:
          [";", "]", ")", ",", ":", "==", "<"], "+", "-"),
 
         ('Factor', ['ID', 'NUM'],
-         [";", "]", ")", ",", ":", "==", "<"], "+", "-", "*")
+         [";", "]", ")", ",", ":", "==", "<", "+", "-", "*"]),
 
         ('Power', ['(', '[', '**', 'EPSILON'],
-         [";", "]", ")", ",", ":", "==", "<"], "+", "-", "*")
+         [";", "]", ")", ",", ":", "==", "<", "+", "-", "*"]),
 
         ('Primary', ['(', '[', 'EPSILON'],
-         [";", "]", ")", ",", ":", "==", "<"], "+", "-", "*")
+         [";", "]", ")", ",", ":", "==", "<", "+", "-", "*"]),
 
 
         ('Arguments', ['ID', 'NUM', 'EPSILON'],
@@ -268,7 +268,7 @@ class TransitionDiagrams:
         ('Function_def', [('def', 'T'), ('ID', 'T'), ('(', 'T'), ('Params', 'NT'), (')', 'T'), (':', 'T'), ('Statements', 'NT')]),
 
         ('Params', [('ID', 'T'), ('Params_Prime', 'NT'),
-                    ('EPSILON', 'T')])
+                    ('EPSILON', 'T'),]),
 
         ('Params_Prime', [(',', 'T'), ('ID', 'T'), ('Params_Prime', 'NT'),
                           ('EPSILON', 'T')]),
@@ -278,7 +278,7 @@ class TransitionDiagrams:
 
         #Else_block -> else : Statements
         ('Else_block ', [('else', 'T'), (':', 'T'), ('Statements', 'NT'),
-                         ('EPSILON', 'T')])
+                         ('EPSILON', 'T')]),
 
         #Iteration_stmt -> while ( Relational_Expression ) Statements
         ('Iteration_stmt', [('while', 'T'), ('(', 'T'), ('Relational_Expression', 'NT'), (')', 'T'), ('Statements', 'NT')]),
