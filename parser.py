@@ -125,6 +125,8 @@ def parse_diagram(element):
                 return None
             else:
                 update_syntax_errors(get_token_line(), element[0], 'missing')
+                if element[0] == '$':
+                    print(get_token())
                 return None
 
     if get_token_type() in ['NUM','ID']:

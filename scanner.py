@@ -22,6 +22,7 @@ eof_flag = False
 unseen_token = False
 error_raised = False
 emergency_flag = False
+return_eop_next_time = False
 lexical_errors = []
 tokens = []
 symbol_table_elements = [
@@ -157,7 +158,7 @@ def symbol_state():
     if not (input_stream_pointer + 1 in range(len(input_stream))):
         update_tokens(current_line, input_stream[input_stream_pointer], "SYMBOL")
         input_stream_pointer += 1
-        emergency_flag = True
+        #emergency_flag = True
         eof_flag = True
         return
     if not re.match(valid_inputs, input_stream[input_stream_pointer + 1]):
@@ -329,7 +330,9 @@ def comment_state():
 
 
 def get_next_token():
-    global unseen_token, new_token, eof_flag, terminate_flag, current_line, emergency_flag
+    global unseen_token, new_token, eof_flag, terminate_flag, current_line, emergency_flag, return_eop_next_time
+    if return_eop_next_time:
+        return [current_line, "$", "EOP"]
     while not unseen_token:
         start_state()
     unseen_token = False
@@ -337,7 +340,9 @@ def get_next_token():
         emergency_flag = True
         eof_flag = False
         temp = new_token
-        new_token = [current_line, "$", "EOP"]
-        return temp
+        print('here nigga')
+        return_eop_next_time = True
+        return [current_line, "$", "EOP"]
+
 
     return new_token
