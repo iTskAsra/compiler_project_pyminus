@@ -112,6 +112,7 @@ def get_input_stream_from_input(address):
     global input_stream
     with open(address, 'rb') as f:
         input_stream = (f.read(50000)).decode()
+    input_stream += '\n'
 
 
 def check_white_space(char):
