@@ -332,8 +332,7 @@ def comment_state():
 
 def get_next_token():
     global unseen_token, new_token, eof_flag, terminate_flag, current_line, emergency_flag, return_eop_next_time
-    if return_eop_next_time:
-        return [current_line, "$", "EOP"]
+
     while not unseen_token:
         start_state()
     unseen_token = False
@@ -341,7 +340,6 @@ def get_next_token():
         emergency_flag = True
         eof_flag = False
         temp = new_token
-        print('here nigga')
         return_eop_next_time = True
         return [current_line, "$", "EOP"]
 
