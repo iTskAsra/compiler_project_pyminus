@@ -24,7 +24,7 @@ class parse_table:
             '-' : '',
             '*' : '',
             '**' : '',
-            'NUM' : '',
+            'NUMBER' : '',
             '$' : [('Statements','NT')]
         },
 
@@ -52,7 +52,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': 'EPSILON'
         },
 
@@ -80,7 +80,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -108,7 +108,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -136,7 +136,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -164,7 +164,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -173,7 +173,7 @@ class parse_table:
             'break': '',
             'continue': '',
             'ID': '',
-            '=': ['=', 'C'],
+            '=': [('=', 'T'), ('C','NT')],
             '[': [('[','T'), ('Expression','NT'), (']','T'), ('=','T'), ('C','NT')],
             ']': '',
             '(': [('(','T'), ('Arguments','NT'), (')','T')],
@@ -192,7 +192,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -200,7 +200,7 @@ class parse_table:
             ';': 'SYNCH',
             'break': '',
             'continue': '',
-            'ID': ['Expression'],
+            'ID': [('Expression','NT')],
             '=': '',
             '[': [('[','T'), ('Expression','NT'), ('List_Rest','NT'), (']','T')],
             ']': '',
@@ -220,7 +220,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': [('Expression','NT')],
+            'NUMBER': [('Expression','NT')],
             '$': ''
         },
 
@@ -248,7 +248,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -276,7 +276,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -304,7 +304,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': [('Expression','NT')],
+            'NUMBER': [('Expression','NT')],
             '$': ''
         },
 
@@ -332,7 +332,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -360,7 +360,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -388,7 +388,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -416,7 +416,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -444,7 +444,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -472,7 +472,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -500,7 +500,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
         'Relational_Expression': {
@@ -527,7 +527,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': ['Expression', 'Relop', 'Expression'],
+            'NUMBER': ['Expression', 'Relop', 'Expression'],
             '$': ''
         },
         'Relop': {
@@ -554,7 +554,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': 'SYNCH',
+            'NUMBER': 'SYNCH',
             '$': ''
         },
         'Expression': {
@@ -581,7 +581,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': ['Term', 'Expression_Prime'],
+            'NUMBER': [('Term','NT'), ('Expression_Prime','NT')],
             '$': ''
         },
         'Expression_Prime': {
@@ -608,7 +608,7 @@ class parse_table:
             '-': [('-','T'), ('Term','NT'), ('Expression_Prime','NT')],
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
         'Term': {
@@ -635,7 +635,7 @@ class parse_table:
             '-': 'SYNCH',
             '*': '',
             '**': '',
-            'NUM': [('Factor','NT'), ('Term_Prime','NT')],
+            'NUMBER': [('Factor','NT'), ('Term_Prime','NT')],
             '$': ''
         },
         'Term_Prime': {
@@ -662,7 +662,7 @@ class parse_table:
             '-': 'EPSILON',
             '*': [('*','T'), ('Factor','NT'), ('Term_Prime','NT')],
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -690,7 +690,7 @@ class parse_table:
             '-': 'SYNCH',
             '*': 'SYNCH',
             '**': '',
-            'NUM': [('Atom','NT'), ('Power','NT')],
+            'NUMBER': [('Atom','NT'), ('Power','NT')],
             '$': ''
         },
         'Power': {
@@ -717,7 +717,7 @@ class parse_table:
             '-': [('Primary','NT')],
             '*': [('Primary','NT')],
             '**': [('**','T'), ('Factor','NT')],
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
         'Primary': {
@@ -744,7 +744,7 @@ class parse_table:
             '-': 'EPSILON',
             '*': 'EPSILON',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
 
@@ -772,7 +772,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': [('Expression','NT'), ('Arguments_Prime','NT')],
+            'NUMBER': [('Expression','NT'), ('Arguments_Prime','NT')],
             '$': ''
         },
         'Arguments_Prime': {
@@ -799,7 +799,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': '',
+            'NUMBER': '',
             '$': ''
         },
         'Atom': {
@@ -826,10 +826,11 @@ class parse_table:
             '-': 'SYNCH',
             '*': 'SYNCH',
             '**': 'SYNCH',
-            'NUM': [('NUM','T')],
+            'NUMBER': [('NUMBER','T')],
             '$': ''
         }
     }
 
     def parse(self, nt, t):
+        print(f'elements are {nt} and {t}')
         return self.parse_dictionary[nt][t]

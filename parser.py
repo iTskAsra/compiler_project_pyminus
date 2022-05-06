@@ -1,7 +1,7 @@
 from anytree import Node, RenderTree
 import scanner
 import re
-from parsetable.py import parse_table
+from parsetable import parse_table
 
 parsed_tree = Node("Program")
 token = []
@@ -63,10 +63,25 @@ def save_syntax_errors(address):
 parse_table = parse_table()
 
 def initiate_parsing():
+    global token_popped, parsed_tree
     scanner.initiate_lexical_errors_file(scanner.lex_errors_address)
     scanner.get_input_stream_from_input(scanner.input_address)
     children = []
-    for edge in td.diagram_tuples[0][1][0]:
+    if token_popped:
+        get_new_token()
+        print(f'new token is: {get_token()}: {get_token_type()}')
+        token_popped = False
+
+    if get_token_type() in ['NUM', 'ID']:
+        parser_result = parse_table.parse('Program', get_token_type())
+    else:
+        parser_result = parse_table.parse('Program', get_token())
+
+    if not parser_result:
+        token_popped = True
+        initiate_parsing()
+        return
+    for edge in parser_result:
         if edge is not None:
             new_node = parse_diagram(edge)
             if new_node is not None:
@@ -78,27 +93,44 @@ def parse_diagram(element):
     global eop, token_popped
     if eop:
         return None
-    printf(f'parsing: {element}')
+    print(f'parsing: {element}')
+    print(f'parse tree is {parsed_tree}')
     if token_popped:
         get_new_token()
-        printf(f'new token is: {get_token()}: {get_token_type()}')
+        print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
-
-    if element == 'EPSILON':
-        diagram_node.children = [Node('epsilon')]
-        return diagram_node
 
     diagram_node = Node(f'{element[0]}')
 
     if element == 'EPSILON':
-        diagram_node.children = [Node('epsilon')]
-        return diagram_node
+        return Node('epsilon')
 
-    if get_token_type() ['NUM','ID']:
+    if element[1] == 'T':
+        if element[0] in [get_token(), get_token_type()]:
+            print(f'parsed {get_token()}')
+            if get_token() == '$':
+                diagram_node.name = '$'
+                token_popped = True
+                return diagram_node
+
+            diagram_node.name = f'({get_token_type()}, {get_token()})'
+            token_popped = True
+            return diagram_node
+        else:
+            if get_token() == '$':
+                update_syntax_errors(get_token_line(), 'Unexpected EOF', '')
+                eop = True
+                return None
+            else:
+                update_syntax_errors(get_token_line(), element[0], 'missing')
+                return None
+
+    if get_token_type() in ['NUMBER','ID']:
         parser_result = parse_table.parse(element[0],get_token_type())
     else:
         parser_result = parse_table.parse(element[0], get_token())
 
+    children = []
     if parser_result == 'EPSILON':
         new_node = parse_diagram(parser_result)
         children.append(new_node)
@@ -106,12 +138,19 @@ def parse_diagram(element):
         return diagram_node
 
     if not parser_result:
-
-        pass
+        token_popped = True
+        return parse_diagram(element)
 
     if parser_result == 'SYNCH':
-
+        return None
         pass
+
+    for parsable in parser_result:
+        new_node = parse_diagram(parsable)
+        if new_node is not None:
+            children.append(new_node)
+    diagram_node.children = children
+    return diagram_node
 
 
 
