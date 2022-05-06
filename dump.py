@@ -75,8 +75,6 @@ global eop
 
                 else:
                     if get_token_type() == 'ID' or get_token_type() == 'NUM':
-                        if get_token_type() == 'SYMBOL':
-                            print('\n\n\nhi\n\n\n')
                         update_syntax_errors(get_token_line(), get_token_type(), 'illegal')
                         token_popped = True
                         return parse_diagram(diagram)

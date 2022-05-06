@@ -94,12 +94,10 @@ def parse_diagram(element):
     global eop, token_popped
     if eop:
         return None
-    #print(f'parsing: {element}')
-    #if element[0] == '$':
-        #print(token_popped)
+    print(f'parsing: {element}')
     if token_popped:
         get_new_token()
-        #print(f'new token is: {get_token()}: {get_token_type()}')
+        print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
 
@@ -110,7 +108,7 @@ def parse_diagram(element):
 
     if element[1] == 'T':
         if element[0] in [get_token(), get_token_type()]:
-            #print(f'parsed {get_token()}')
+            print(f'parsed {get_token()}')
             if get_token() == '$':
                 eop = True
                 diagram_node.name = '$'
@@ -142,12 +140,20 @@ def parse_diagram(element):
         return diagram_node
 
     if not parser_result:
+        if get_token() == '$':
+            update_syntax_errors(get_token_line(), 'Unexpected EOF', '')
+            eop = True
+            return None
+        if get_token_type() in ['ID','NUM']:
+            update_syntax_errors(get_token_line(), get_token_type(), 'illegal')
+        else:
+            update_syntax_errors(get_token_line(), get_token(), 'illegal')
         token_popped = True
         return parse_diagram(element)
 
     if parser_result == 'SYNCH':
+        update_syntax_errors(get_token_line(), element[0], 'missing')
         return None
-        pass
 
     for parsable in parser_result:
         new_node = parse_diagram(parsable)
