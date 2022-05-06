@@ -52,12 +52,14 @@ def update_syntax_errors(line, terminal, error_description):
 
 
 def save_syntax_errors(address):
-    with open(address, 'w') as f:
-        for error in syntax_errors:
-            if error[1] == 'Unexpected EOF':
-                f.write(f'#{error[0]} : syntax error, Unexpected EOF\n')
-            else:
-                f.write(f"#{error[0]} : syntax error, {error[2]} {error[1]}\n")
+    initialize_errors_file(address)
+    if syntax_errors:
+        with open(address, 'w') as f:
+            for error in syntax_errors:
+                if error[1] == 'Unexpected EOF':
+                    f.write(f'#{error[0]} : syntax error, Unexpected EOF\n')
+                else:
+                    f.write(f"#{error[0]} : syntax error, {error[2]} {error[1]}\n")
 
 
 parse_table = parse_table()

@@ -527,7 +527,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': ['Expression', 'Relop', 'Expression'],
+            'NUM': [('Expression','NT'), ('Relop','NT'), ('Expression','NT')],
             '$': ''
         },
         'Relop': {
