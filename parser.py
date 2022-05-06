@@ -69,7 +69,7 @@ def initiate_parsing():
     children = []
     if token_popped:
         get_new_token()
-        print(f'new token is: {get_token()}: {get_token_type()}')
+        #print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
     if get_token_type() in ['NUM', 'ID']:
@@ -94,12 +94,12 @@ def parse_diagram(element):
     global eop, token_popped
     if eop:
         return None
-    print(f'parsing: {element}')
-    if element[0] == '$':
-        print(token_popped)
+    #print(f'parsing: {element}')
+    #if element[0] == '$':
+        #print(token_popped)
     if token_popped:
         get_new_token()
-        print(f'new token is: {get_token()}: {get_token_type()}')
+        #print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
 
@@ -110,9 +110,8 @@ def parse_diagram(element):
 
     if element[1] == 'T':
         if element[0] in [get_token(), get_token_type()]:
-            print(f'parsed {get_token()}')
+            #print(f'parsed {get_token()}')
             if get_token() == '$':
-                print('hi')
                 eop = True
                 diagram_node.name = '$'
                 token_popped = True

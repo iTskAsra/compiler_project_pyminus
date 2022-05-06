@@ -258,7 +258,6 @@ def keyword_or_id_state():
             if re.match(white_space_rexp, input_stream[input_stream_pointer]):
                 check_white_space(input_stream[input_stream_pointer])
                 input_stream_pointer += 1
-                #print(current_line, keyword_or_id)
             return
         elif re.match(valid_inputs, input_stream[input_stream_pointer]):
             if re.match(keywords, keyword_or_id):
@@ -334,12 +333,11 @@ def get_next_token():
     while not unseen_token:
         start_state()
     unseen_token = False
-    print(new_token)
     if eof_flag:
         emergency_flag = True
         eof_flag = False
-        return new_token
-    if emergency_flag:
-        return [current_line, "$", "EOP"]
+        temp = new_token
+        new_token = [current_line, "$", "EOP"]
+        return temp
 
     return new_token
