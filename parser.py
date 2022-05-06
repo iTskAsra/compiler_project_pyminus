@@ -81,6 +81,7 @@ def initiate_parsing():
         token_popped = True
         initiate_parsing()
         return
+
     for edge in parser_result:
         if edge is not None:
             new_node = parse_diagram(edge)
@@ -94,21 +95,25 @@ def parse_diagram(element):
     if eop:
         return None
     print(f'parsing: {element}')
-    print(f'parse tree is {parsed_tree}')
+    if element[0] == '$':
+        print(token_popped)
     if token_popped:
         get_new_token()
         print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
-    diagram_node = Node(f'{element[0]}')
 
     if element == 'EPSILON':
         return Node('epsilon')
+
+    diagram_node = Node(f'{element[0]}')
 
     if element[1] == 'T':
         if element[0] in [get_token(), get_token_type()]:
             print(f'parsed {get_token()}')
             if get_token() == '$':
+                print('hi')
+                eop = True
                 diagram_node.name = '$'
                 token_popped = True
                 return diagram_node
@@ -125,7 +130,7 @@ def parse_diagram(element):
                 update_syntax_errors(get_token_line(), element[0], 'missing')
                 return None
 
-    if get_token_type() in ['NUMBER','ID']:
+    if get_token_type() in ['NUM','ID']:
         parser_result = parse_table.parse(element[0],get_token_type())
     else:
         parser_result = parse_table.parse(element[0], get_token())
@@ -151,17 +156,3 @@ def parse_diagram(element):
             children.append(new_node)
     diagram_node.children = children
     return diagram_node
-
-
-
-
-
-
-
-initialize_errors_file(syntax_errors_address)
-initiate_parsing()
-
-save_parsed_tree(parsed_tree_address)
-
-if errors_raised:
-    save_syntax_errors(syntax_errors_address)
