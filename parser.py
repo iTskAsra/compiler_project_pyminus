@@ -157,9 +157,9 @@ def parse_diagram(element):
             return diagram_node
         else:
             if get_token() == '$':
-                update_syntax_errors(get_token_line(), 'Unexpected EOF', '')
+                update_syntax_errors(get_token_line(), element[0], 'missing')
                 eop = True
-                return None
+                return Node('$')
             else:
                 update_syntax_errors(get_token_line(), element[0], 'missing')
                 if element[0] == '$':
@@ -177,6 +177,10 @@ def parse_diagram(element):
         children.append(new_node)
         diagram_node.children = children
         return diagram_node
+
+    if parser_result == 'SYNCH':
+        update_syntax_errors(get_token_line(), element[0], 'missing')
+        return None
 
     if not parser_result:
         if get_token() == '$':
