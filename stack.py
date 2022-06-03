@@ -24,8 +24,11 @@ class Stack:
     def clear(self):
         self.stack.clear()
 
-    def setScope(self, scope):
-        self.scope = scope
+    def newScope(self):
+        self.scope = self.scope + 1
+
+    def getScope(self):
+        return self.scope
 
 
 #test
@@ -36,4 +39,5 @@ if __name__ == '__main__':
     stack.push(12)
     #3, 6, 12
     # stack.clear()
-    print(stack.isEmpty())
+    # stack.newScope()
+    print(stack.getScope())
