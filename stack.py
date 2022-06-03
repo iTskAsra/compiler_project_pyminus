@@ -1,8 +1,8 @@
 
 class Stack:
-    def __init__(self, scope):
+    def __init__(self):
         self.stack = []
-        self.scope = scope
+        self.scope = 0
 
     def push(self, element):
         self.stack.append(element)
@@ -33,7 +33,7 @@ class Stack:
 
 #test
 if __name__ == '__main__':
-    stack = Stack(0)
+    stack = Stack()
     stack.push(3)
     stack.push(6)
     stack.push(12)
