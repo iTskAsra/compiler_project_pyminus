@@ -141,6 +141,10 @@ def parse_diagram(element):
     if element == 'EPSILON':
         return Node('epsilon')
 
+    if element[1] == 'AS':
+        pass
+        code_gen.call()
+
     diagram_node = Node(f'{element[0]}')
 
     if element[1] == 'T':

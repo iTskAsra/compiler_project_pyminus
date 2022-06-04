@@ -104,6 +104,7 @@ def save_tokens(address):
 
 
 def initiate_lexical_errors_file(address):
+    return
     with open(address, 'w') as f:
         f.write("There is no lexical error.")
 

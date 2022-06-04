@@ -10,7 +10,7 @@ class Stack:
     def pop(self):
         return self.stack.pop()
 
-    def isEmpty(self):
+    def is_empty(self):
         return not bool(len(self.stack))
 
     def size(self):
@@ -24,10 +24,10 @@ class Stack:
     def clear(self):
         self.stack.clear()
 
-    def newScope(self):
+    def new_scope(self):
         self.scope = self.scope + 1
 
-    def getScope(self):
+    def get_scope(self):
         return self.scope
 
 
