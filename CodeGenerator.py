@@ -105,5 +105,11 @@ class CodeGenerator:
         self.semantic_stack.pop()
         self.save_function()
 
+    def check_temp_address(self, address):
+        return address >= self.temp_block.starting_index
+
+    def check_data_address(self, address):
+        return (address >= self.data_block.starting_index) \
+               and (address < self.temp_block.starting_index)
 
 
