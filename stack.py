@@ -1,8 +1,9 @@
-
 class Stack:
-    def __init__(self):
+    def __init__(self, starting_index: int):
+        self.filled_cells = 0
         self.stack = []
         self.scope = 0
+        self.starting_index = starting_index
 
     def push(self, element):
         self.stack.append(element)
@@ -19,7 +20,7 @@ class Stack:
     def peek(self, index):
         length = self.size() - 1
         if index <= length:
-            return self.stack[length - index] #peek(2) -> return stack [top - 2]
+            return self.stack[length - index]  # peek(2) -> return stack [top - 2]
 
     def clear(self):
         self.stack.clear()
@@ -30,14 +31,19 @@ class Stack:
     def get_scope(self):
         return self.scope
 
+    def get_first_empty_cell(self) -> int:
+        empty_cell = self.starting_index + 4 * self.filled_cells
+        self.filled_cells += 1
+        return empty_cell
 
-#test
+
+# test
 if __name__ == '__main__':
     stack = Stack()
     stack.push(3)
     stack.push(6)
     stack.push(12)
-    #3, 6, 12
+    # 3, 6, 12
     # stack.clear()
     # stack.newScope()
-    print(stack.getScope())
+    print(stack.size())
