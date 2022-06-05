@@ -1,4 +1,4 @@
-import symbol
+import enum
 
 from stack import Stack
 
@@ -19,17 +19,16 @@ class CodeGenerator:
         self.semantic_stack = []
         self.program_block = []
 
-    def get_temp(self) -> int:
+    def get_temp_func(self) -> int:
         return self.temp_block.get_first_empty_cell()
 
-    def pid(self, token):
-        address = self.find_address(token)
+    def pid_func(self):
+        address = self.find_address(self.current_id)
         self.stack.push(address)
 
     def assign_func(self):
         self.generate_formatted_code(
             'ASSIGN', self.semantic_stack[-1], self.semantic_stack[-2], '')
-
         num1_type = self.get_type(self.semantic_stack.pop())
         num2_type = self.get_type(self.semantic_stack[-1])
 
@@ -40,9 +39,13 @@ class CodeGenerator:
             sign = 'ADD'
         elif symbol_element == '*':
             sign = 'MULT'
-        temp = self.get_temp()
+        temp = self.get_temp_func()
         self.generate_formatted_code(
-            sign, self.semantic_stack[-2], self.semantic_stack[-1], temp)
+            sign,
+            self.semantic_stack[-2],
+            self.semantic_stack[-1],
+            temp
+        )
         num1 = self.stack.pop()
         num2 = self.stack.pop()
         num1_type, num2_type = self.get_type(num1), self.get_type(num2)
@@ -50,11 +53,16 @@ class CodeGenerator:
 
     def push_number_dec(self):
         self.semantic_stack.append(self.current_num)
-    def generate_formatted_code(self, relop: str, s1, s2, s3):
-        self.program_block.append(f'({relop}, {s1}, {s2}, {s3})')
 
-    def insert_formatted_code(self, index: int,
-                              relop: str, string1, string2, string3):
+    def push_number(self):
+        self.semantic_stack.append(f'#{self.current_number}')
+
+    def generate_formatted_code(self, relop: str,
+                                string1, string2, string3):
+        self.program_block.append(f'({relop}, {string1}, {string2}, {string3})')
+
+    def insert_formatted_code(self, index: int, relop: str,
+                              string1, string2, string3):
         self.program_block[index] = \
             f'({relop}, {string1}, {string2}, {string3})'
 
@@ -63,3 +71,39 @@ class CodeGenerator:
 
     def get_type(self, var):
         pass
+
+    def jp_func(self):
+        self.insert_formatted_code(
+            self.semantic_stack[-1],
+            "JP", len(self.program_block),
+            "",
+            ""
+        )
+        self.semantic_stack.pop()
+
+    def save_function(self):
+        self.semantic_stack.append(len(self.program_block))
+        self.program_block.append("")
+
+    def jpf_func(self):
+        self.insert_formatted_code(
+            self.semantic_stack[-1],
+            "JPF",
+            self.semantic_stack[-2],
+            len(self.program_block), ""
+        )
+
+    def save_jpf_func(self):
+        self.insert_formatted_code(
+            self.semantic_stack[-1],
+            'JPF',
+            self.semantic_stack[-2],
+            len(self.program_block) + 1,
+            ''
+        )
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        self.save_function()
+
+
+
