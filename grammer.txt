@@ -6,44 +6,51 @@ Statement⟶Simple_stmt
 Simple_stmt⟶Assignment_Call
 Simple_stmt⟶Return_stmt
 Simple_stmt⟶Global_stmt
-Simple_stmt⟶break
-Simple_stmt⟶continue
+Simple_stmt⟶break #break
+Simple_stmt⟶continue #continue
+
 Compound_stmt⟶Function_def
 Compound_stmt⟶If_stmt
 Compound_stmt⟶Iteration_stmt
 Assignment_Call⟶ #pid ID B
-B⟶= C
-B⟶[ Expression ] = C
+B⟶= C #assign
+B⟶[ Expression ] = C #assign
 B⟶( Arguments )
 C⟶Expression
 C⟶[ Expression List_Rest ]
 List_Rest⟶, Expression List_Rest
 List_Rest⟶
-Return_stmt⟶return Return_Value
+Return_stmt⟶return #return Return_Value 
 Return_Value⟶Expression
 Return_Value⟶
 Global_stmt⟶global #pid ID
-Function_def⟶def #pid ID ( Params ) : Statements
-Params⟶ID Params_Prime
+
+#is it 
+Function_def⟶#func def #pid ID ( Params ) : Statements
+Params⟶#pid ID Params_Prime
 Params⟶
 Params_Prime⟶, #pid ID Params_Prime
 Params_Prime⟶
-If_stmt⟶if Relational_Expression : Statements Else_block
-Else_block⟶else : Statements
-Else_block⟶
+
+# TODO
+If_stmt⟶if Relational_Expression #save : Statements Else_block
+Else_block⟶else #jpf_save : Statements #jp
+Else_block⟶ #jpf
+
 Iteration_stmt⟶while #label ( Relational_Expression ) #save Statements #while
-Relational_Expression⟶Expression Relop Expression
+Relational_Expression⟶Expression Relop Expression #relop
 Relop⟶==
 Relop⟶<
+
 Expression⟶Term Expression_Prime
-Expression_Prime⟶#add + Term Expression_Prime
-Expression_Prime⟶#sub - Term Expression_Prime
+Expression_Prime⟶+ Term #ADD Expression_Prime
+Expression_Prime⟶- Term #SUB Expression_Prime 
 Expression_Prime⟶
 Term⟶Factor Term_Prime
-Term_Prime⟶#mult * Factor Term_Prime
+Term_Prime⟶ * Factor #mult Term_Prime
 Term_Prime⟶
 Factor⟶Atom Power
-Power⟶#power ** Factor
+Power⟶ ** Factor #power
 Power⟶Primary
 Primary⟶[ Expression ] Primary
 Primary⟶( Arguments ) Primary
