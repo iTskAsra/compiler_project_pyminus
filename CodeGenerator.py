@@ -1,5 +1,6 @@
 import enum
-
+import imp
+from three_address_code import three_addr_code
 from stack import Stack
 
 
@@ -18,6 +19,21 @@ class CodeGenerator:
         self.temp_block = Stack(500)
         self.semantic_stack = []
         self.program_block = []
+        self.pb_ptr = 0
+
+        self.semantic_routines = {
+            'pid' : pid,
+            'pnum' : pnum,
+            'label' : label
+        }
+
+    def call_routine(self, routine, token):
+        self.semantic_routines[routine]()
+
+    
+    def add_code_to_pb(self, operation, lhs, rhs, target):
+        self.program_block.append(three_addr_code(self.pb_ptr, operation, lhs, rhs, target))
+        self.pb_ptr += 1
 
     def get_temp_func(self) -> int:
         return self.temp_block.get_first_empty_cell()

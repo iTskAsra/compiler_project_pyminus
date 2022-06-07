@@ -1,4 +1,5 @@
 import re
+from symbol_table import symbol_table
 
 # regular expression compilations:
 white_space_rexp = re.compile(r'\n|\t|\f|\r|\v|\s')
@@ -29,14 +30,16 @@ symbol_table_elements = [
     "break", "continue", "def", "else", "if", "return", "while"
 ]
 
+symbol_table = symbol_table()
 
-def update_symbol_table(element):
-    for i in range(len(symbol_table_elements)):
-        if element == symbol_table_elements[i]:
-            return 1
+def initiate_symbol_table():
+    for raw_symbol in symbol_table_elements:
+        symbol_table.add_symbol(raw_symbol, 'keyword')
 
-    symbol_table_elements.append(element)
-    return 0
+
+
+def update_symbol_table(element, type):
+    symbol_table.add_symbol(element, type)
 
 
 def update_tokens(line, token, ttype):
@@ -257,7 +260,7 @@ def keyword_or_id_state():
                 update_tokens(current_line, keyword_or_id, "KEYWORD")
             else:
                 update_tokens(current_line, keyword_or_id, "ID")
-            update_symbol_table(keyword_or_id)
+                update_symbol_table(keyword_or_id, 'ID')
             if re.match(white_space_rexp, input_stream[input_stream_pointer]):
                 check_white_space(input_stream[input_stream_pointer])
                 input_stream_pointer += 1
@@ -267,7 +270,7 @@ def keyword_or_id_state():
                 update_tokens(current_line, keyword_or_id, "KEYWORD")
             else:
                 update_tokens(current_line, keyword_or_id, "ID")
-            update_symbol_table(keyword_or_id)
+                update_symbol_table(keyword_or_id, 'ID')
             return
         else:
             update_errors(current_line, keyword_or_id + input_stream[input_stream_pointer], "Invalid input")
