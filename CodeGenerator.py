@@ -17,7 +17,7 @@ class CodeGenerator:
         self.memory_temp = []
         self.data_block = Stack(100)
         self.temp_block = Stack(500)
-        self.semantic_stack = []
+        self.semantic_stack = Stack(3000)
         self.program_block = []
         self.pb_ptr = 0
 
@@ -35,58 +35,60 @@ class CodeGenerator:
         self.program_block.append(three_addr_code(self.pb_ptr, operation, lhs, rhs, target))
         self.pb_ptr += 1
 
-    def get_temp_func(self) -> int:
-        return self.temp_block.get_first_empty_cell()
+    def find_token_address(self, token):
+        token_address = token.address
+        return token_address #return token address, not implemented!
 
-    def pid_func(self):
+    def pid(self):
         address = self.find_address(self.current_id)
         self.stack.push(address)
 
-    def assign_func(self):
-        self.generate_formatted_code(
-            'ASSIGN', self.semantic_stack[-1], self.semantic_stack[-2], '')
-        num1_type = self.get_type(self.semantic_stack.pop())
-        num2_type = self.get_type(self.semantic_stack[-1])
+    def pnum(self):
+        self.stack.push(self.current_number)
 
-    def calculation(self):
-        sign = 'SUB'
-        symbol_element = self.symbol_stack.pop()
-        if symbol_element == '+':
-            sign = 'ADD'
-        elif symbol_element == '*':
-            sign = 'MULT'
-        temp = self.get_temp_func()
-        self.generate_formatted_code(
-            sign,
-            self.semantic_stack[-2],
-            self.semantic_stack[-1],
-            temp
-        )
-        num1 = self.stack.pop()
-        num2 = self.stack.pop()
-        num1_type, num2_type = self.get_type(num1), self.get_type(num2)
-        self.semantic_stack.append(temp)
+    def push_to_program_block(self, sign, par1, par2, temp):
+        self.program_block.append(f'({sign}, {par1}, {par2}, {temp})')
+        self.stack.pop()
+        self.stack.pop()
+        if temp is not None:
+            self.stack.push(temp)
 
-    def push_number_dec(self):
-        self.semantic_stack.append(self.current_num)
+    def add(self):
+        t = get_temp()
+        num1 = self.stack.peek(0)
+        num2 = self.stack.peek(-1)
+        t = num1 + num2
+        self.push_to_program_block("ADD", num1, num2, t)
 
-    def push_number(self):
-        self.semantic_stack.append(f'#{self.current_number}')
 
-    def generate_formatted_code(self, relop: str,
-                                string1, string2, string3):
-        self.program_block.append(f'({relop}, {string1}, {string2}, {string3})')
+    def sub(self):
+        t = get_temp()
+        num1 = self.stack.peek(0)
+        num2 = self.stack.peek(-1)
+        t = num1 - num2
+        self.push_to_program_block("SUB", num1, num2, t)
 
-    def insert_formatted_code(self, index: int, relop: str,
-                              string1, string2, string3):
-        self.program_block[index] = \
-            f'({relop}, {string1}, {string2}, {string3})'
+    def mult(self):
+        t = get_temp()
+        num1 = self.stack.peek(0)
+        num2 = self.stack.peek(-1)
+        t = num1 * num2
+        self.push_to_program_block("MULT", num1, num2, t)
 
-    def find_address(self, token):
-        return 0  # the token address
+    def power(self):
+        num1 = self.stack.peek(0) #num2 ^ num1
+        num2 = self.stack.peek(-1)
+        i = num1
+        while i > 0:
+            self.stack.push(num2)
+            self.stack.push(num2)
+            self.mult()
 
-    def get_type(self, var):
-        pass
+    def assign(self):
+        self.push_to_program_block("ASSIGN", self.stack.peek(0), self.stack.peek(-1), None)
+
+
+    ##########################
 
     def jp_func(self):
         self.insert_formatted_code(
