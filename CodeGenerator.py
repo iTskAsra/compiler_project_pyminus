@@ -39,53 +39,57 @@ class CodeGenerator:
         token_address = token.address
         return token_address #return token address, not implemented!
 
+    def label(self):
+        line = len(self.program_block)
+        self.semantic_stack.push(line)
+
+    def save(self):
+        line = len(self.program_block)
+        self.semantic_stack.push(line)
+        self.reserve_pb()
+
+    def reserve_pb(self):
+        self.program_block.append('')
+
     def pid(self):
         address = self.find_address(self.current_id)
-        self.stack.push(address)
+        self.semantic_stack.push(address)
 
     def pnum(self):
-        self.stack.push(self.current_number)
-
-    def push_to_program_block(self, sign, par1, par2, temp):
-        self.program_block.append(f'({sign}, {par1}, {par2}, {temp})')
-        self.stack.pop()
-        self.stack.pop()
-        if temp is not None:
-            self.stack.push(temp)
+        self.semantic_stack.push(self.current_number)
 
     def add(self):
-        t = get_temp()
-        num1 = self.stack.peek(0)
-        num2 = self.stack.peek(-1)
+        num1 = self.semantic_stack.peek(0)
+        num2 = self.semantic_stack.peek(-1)
         t = num1 + num2
-        self.push_to_program_block("ADD", num1, num2, t)
+        self.add_code_to_pb("ADD", num1, num2, t)
 
 
     def sub(self):
         t = get_temp()
-        num1 = self.stack.peek(0)
-        num2 = self.stack.peek(-1)
+        num1 = self.semantic_stack.peek(0)
+        num2 = self.semantic_stack.peek(-1)
         t = num1 - num2
-        self.push_to_program_block("SUB", num1, num2, t)
+        self.add_code_to_pb("SUB", num1, num2, t)
 
     def mult(self):
-        t = get_temp()
-        num1 = self.stack.peek(0)
-        num2 = self.stack.peek(-1)
+        num1 = self.semantic_stack.peek(0)
+        num2 = self.semantic_stack.peek(-1)
         t = num1 * num2
-        self.push_to_program_block("MULT", num1, num2, t)
+        self.add_code_to_pb("MULT", num1, num2, t)
 
     def power(self):
-        num1 = self.stack.peek(0) #num2 ^ num1
-        num2 = self.stack.peek(-1)
+        num1 = self.semantic_stack.peek(0) #num2 ^ num1
+        num2 = self.semantic_stack.peek(-1)
         i = num1
         while i > 0:
-            self.stack.push(num2)
-            self.stack.push(num2)
+            self.semantic_stack.push(num2)
+            self.semantic_stack.push(num2)
             self.mult()
+            i -= 1
 
     def assign(self):
-        self.push_to_program_block("ASSIGN", self.stack.peek(0), self.stack.peek(-1), None)
+        self.add_code_to_pb("ASSIGN", self.semantic_stack.peek(0), self.semantic_stack.peek(-1), '')
 
 
     ##########################
