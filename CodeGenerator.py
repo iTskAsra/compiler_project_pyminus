@@ -48,6 +48,32 @@ class CodeGenerator:
         self.semantic_stack.push(line)
         self.reserve_pb()
 
+    def jpf_save(self):
+        i = len(self.program_block)
+        self.add_code_to_pb("JPF", self.semantic_stack.peek(-1), i, '')
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+
+    def jp(self):
+        i = len(self.program_block)
+        self.add_code_to_pb("JP", i, '', '')
+        self.semantic_stack.pop()
+
+    def jpf(self):
+        i = len(self.program_block) #???????compare to jpf_save
+        self.add_code_to_pb("JPF", self.semantic_stack.peek(-1), i, '')
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+
+    def while_func(self): #####is it true? idk
+        i = len(self.program_block)
+        self.add_code_to_pb("JPF", self.semantic_stack.peek(-1), i, '') #i+1
+        self.program_block.insert(i, three_addr_code("JP", self.semantic_stack.peek(-2), '', ''))
+        i += 1
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+        self.semantic_stack.pop()
+
     def reserve_pb(self):
         self.program_block.append('')
 
