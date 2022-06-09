@@ -39,6 +39,13 @@ class CodeGenerator:
         token_address = token.address
         return token_address #return token address, not implemented!
 
+    def pid(self):
+        address = self.find_address(self.current_id)
+        self.semantic_stack.push(address)
+
+    def pnum(self):
+        self.semantic_stack.push(self.current_number)
+
     def label(self):
         line = len(self.program_block)
         self.semantic_stack.push(line)
@@ -77,13 +84,6 @@ class CodeGenerator:
     def reserve_pb(self):
         self.program_block.append('')
 
-    def pid(self):
-        address = self.find_address(self.current_id)
-        self.semantic_stack.push(address)
-
-    def pnum(self):
-        self.semantic_stack.push(self.current_number)
-
     def add(self):
         num1 = self.semantic_stack.peek(0)
         num2 = self.semantic_stack.peek(-1)
@@ -117,7 +117,23 @@ class CodeGenerator:
     def assign(self):
         self.add_code_to_pb("ASSIGN", self.semantic_stack.peek(0), self.semantic_stack.peek(-1), '')
 
-
+    def relop(self):
+        #Relational_Expression⟶Expression Relop Expression #relop
+        relop = '==' #how to find relop????????????????????????????????????????????????
+        num1 = self.semantic_stack.pop()
+        num2 = self.semantic_stack.pop()
+        if relop ==  '<':
+            if num1 < num2:
+                r = 1
+            else:
+                r = 0
+            self.add_code_to_pb('LT', num1, num2, r)
+        elif relop == '==':
+            if num1 == num2:
+                r = 1
+            else:
+                r = 0
+            self.add_code_to_pb('EQ', num1, num2, r)
     ##########################
 
     def jp_func(self):
