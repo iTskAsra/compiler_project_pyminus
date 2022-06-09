@@ -20,7 +20,7 @@ C⟶Expression
 C⟶[ Expression List_Rest ]
 List_Rest⟶, Expression List_Rest
 List_Rest⟶
-Return_stmt⟶return #return Return_Value 
+Return_stmt⟶return Return_Value #return
 Return_Value⟶Expression
 Return_Value⟶
 Global_stmt⟶global #pid ID
@@ -38,7 +38,7 @@ Else_block⟶else #jpf_save : Statements #jp
 Else_block⟶ #jpf
 
 Iteration_stmt⟶while #label ( Relational_Expression ) #save Statements #while
-Relational_Expression⟶Expression Relop Expression #relop
+Relational_Expression⟶Expression Relop #relop_sign Expression #relop
 Relop⟶==
 Relop⟶<
 

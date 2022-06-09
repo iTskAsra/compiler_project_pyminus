@@ -24,7 +24,19 @@ class CodeGenerator:
         self.semantic_routines = {
             'pid' : pid,
             'pnum' : pnum,
-            'label' : label
+            'label' : label,
+            'relop_sign': relop_sign,
+            'jpf_save': jpf_save,
+            'save': save,
+            'jp': jp,
+            'jpf': jpf,
+            'while': while_func,
+            'add': add,
+            'sub': sub,
+            'mult': mult,
+            'power': power,
+            'assign': assign,
+            'relop': relop
         }
 
     def call_routine(self, routine, token):
@@ -46,14 +58,21 @@ class CodeGenerator:
     def pnum(self):
         self.semantic_stack.push(self.current_number)
 
+    def relop_sign(self):
+        self.semantic_stack.push(self.current_symbol) ######################### to check
+
+    def reserve_pb(self):
+        self.program_block.append('')
+
     def label(self):
         line = len(self.program_block)
         self.semantic_stack.push(line)
+        self.reserve_pb()
 
     def save(self):
         line = len(self.program_block)
         self.semantic_stack.push(line)
-        self.reserve_pb()
+
 
     def jpf_save(self):
         i = len(self.program_block)
@@ -80,9 +99,6 @@ class CodeGenerator:
         self.semantic_stack.pop()
         self.semantic_stack.pop()
         self.semantic_stack.pop()
-
-    def reserve_pb(self):
-        self.program_block.append('')
 
     def add(self):
         num1 = self.semantic_stack.peek(0)
@@ -119,8 +135,8 @@ class CodeGenerator:
 
     def relop(self):
         #Relational_Expression⟶Expression Relop Expression #relop
-        relop = '==' #how to find relop????????????????????????????????????????????????
         num1 = self.semantic_stack.pop()
+        relop = self.semantic_stack.pop() #how to find relop????????????????????????????????????????????????
         num2 = self.semantic_stack.pop()
         if relop ==  '<':
             if num1 < num2:
@@ -134,40 +150,19 @@ class CodeGenerator:
             else:
                 r = 0
             self.add_code_to_pb('EQ', num1, num2, r)
+
+    def return_func(self):
+        return_value = self.semantic_stack.pop()
+
+
+
+
+
+
+
+
+
     ##########################
-
-    def jp_func(self):
-        self.insert_formatted_code(
-            self.semantic_stack[-1],
-            "JP", len(self.program_block),
-            "",
-            ""
-        )
-        self.semantic_stack.pop()
-
-    def save_function(self):
-        self.semantic_stack.append(len(self.program_block))
-        self.program_block.append("")
-
-    def jpf_func(self):
-        self.insert_formatted_code(
-            self.semantic_stack[-1],
-            "JPF",
-            self.semantic_stack[-2],
-            len(self.program_block), ""
-        )
-
-    def save_jpf_func(self):
-        self.insert_formatted_code(
-            self.semantic_stack[-1],
-            'JPF',
-            self.semantic_stack[-2],
-            len(self.program_block) + 1,
-            ''
-        )
-        self.semantic_stack.pop()
-        self.semantic_stack.pop()
-        self.save_function()
 
     def check_temp_address(self, address):
         return address >= self.temp_block.starting_index
