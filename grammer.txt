@@ -43,8 +43,8 @@ Relop⟶==
 Relop⟶<
 
 Expression⟶Term Expression_Prime
-Expression_Prime⟶+ Term #ADD Expression_Prime
-Expression_Prime⟶- Term #SUB Expression_Prime 
+Expression_Prime⟶+ Term #add Expression_Prime
+Expression_Prime⟶- Term #sub Expression_Prime
 Expression_Prime⟶
 Term⟶Factor Term_Prime
 Term_Prime⟶ * Factor #mult Term_Prime

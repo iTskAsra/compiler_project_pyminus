@@ -58,8 +58,8 @@ class parse_table:
 
         'Simple_stmt': {
             ';': 'SYNCH',
-            'break': [('break','T')],
-            'continue': [('continue','T')],
+            'break': [('break','T'), ('#break', 'AS')],
+            'continue': [('continue','T'), ('#continue', 'AS')],
             'ID': [('Assignment_Call','NT')],
             '=': '',
             '[': '',
@@ -144,7 +144,7 @@ class parse_table:
             ';': 'SYNCH',
             'break': '',
             'continue': '',
-            'ID': [('ID','T'), ('B','NT')],
+            'ID': [('#pid', 'AS'), ('ID','T'), ('B','NT')],
             '=': '',
             '[': '',
             ']': '',
@@ -173,8 +173,8 @@ class parse_table:
             'break': '',
             'continue': '',
             'ID': '',
-            '=': [('=', 'T'), ('C','NT')],
-            '[': [('[','T'), ('Expression','NT'), (']','T'), ('=','T'), ('C','NT')],
+            '=': [('=', 'T'), ('C','NT'), (' #assign', 'AS')],
+            '[': [('[','T'), ('Expression','NT'), (']','T'), ('=','T'), ('C','NT'), (' #assign_arr', 'AS')],
             ']': '',
             '(': [('(','T'), ('Arguments','NT'), (')','T')],
             ')': '',
@@ -264,7 +264,7 @@ class parse_table:
             ')': '',
             ',': '',
             'global': '',
-            'return': [('return','T'), ('Return_Value','NT')],
+            'return': [('return','T'), ('Return_Value','NT'), ('#return', 'AS')],
             'def': '',
             ':': '',
             'if': '',
@@ -319,7 +319,7 @@ class parse_table:
             '(': '',
             ')': '',
             ',': '',
-            'global': [('global','T'), ('ID','T')],
+            'global': [('global','T'), ('#pid','AS'), ('ID','T')],
             'return': '',
             'def': '',
             ':': '',
@@ -335,7 +335,6 @@ class parse_table:
             'NUM': '',
             '$': ''
         },
-
         'Function_def': {
             ';': 'SYNCH',
             'break': '',
@@ -349,7 +348,8 @@ class parse_table:
             ',': '',
             'global': '',
             'return': '',
-            'def': [('def','T'), ('ID','T'), ('(','T'), ('Params','NT'), (')','T'), (':','T'), ('Statements','NT')],
+            'def': [('#func', 'AS'), ('def','T'), ('#pid', 'AS'), ('ID','T'), ('(','T'), ('Params','NT'), (')','T'),
+                    (':','T'), ('Statements','NT'), ('#function_end', 'AS')],
             ':': '',
             'if': '',
             'else': '',
@@ -368,7 +368,7 @@ class parse_table:
             ';': '',
             'break': '',
             'continue': '',
-            'ID': [('ID','T'), ('Params_Prime','NT')],
+            'ID': [('#pid', 'AS'), ('ID','T'), ('Params_Prime','NT')],
             '=': '',
             '[': '',
             ']': '',
@@ -402,7 +402,7 @@ class parse_table:
             ']': '',
             '(': '',
             ')': 'EPSILON',
-            ',': [(',','T'), ('ID','T'), ('Params_Prime','NT')],
+            ',': [(',','T'), ('#pid', 'AS'), ('ID','T'), ('Params_Prime','NT')],
             'global': '',
             'return': '',
             'def': '',
@@ -419,7 +419,6 @@ class parse_table:
             'NUM': '',
             '$': ''
         },
-
         'If_stmt': {
             ';': 'SYNCH',
             'break': '',
@@ -435,7 +434,7 @@ class parse_table:
             'return': '',
             'def': '',
             ':': '',
-            'if': [('if','T'), ('Relational_Expression','NT'), (':','T'), ('Statements','NT'), ('Else_block','NT')],
+            'if': [('if','T'), ('Relational_Expression','NT'), ('#save', 'AS'), (':','T'), ('Statements','NT'), ('Else_block','NT')],
             'else': '',
             'while': '',
             '==': '',
@@ -447,9 +446,9 @@ class parse_table:
             'NUM': '',
             '$': ''
         },
-
+# Else_block⟶ #jpf ###############؟؟؟؟؟؟؟؟؟؟؟؟؟؟؟؟
         'Else_block': {
-            ';': 'EPSILON',
+            ';': [('#jpf', 'AS')],
             'break': '',
             'continue': '',
             'ID': '',
@@ -464,7 +463,7 @@ class parse_table:
             'def': '',
             ':': '',
             'if': '',
-            'else': [('else','T'), (':','T'), ('Statements','NT')],
+            'else': [('else','T'), ('#jpf_save', 'AS'), (':','T'), ('Statements','NT'), ('jp', 'AS')],
             'while': '',
             '==': '',
             '<': '',
@@ -475,7 +474,6 @@ class parse_table:
             'NUM': '',
             '$': ''
         },
-
         'Iteration_stmt': {
             ';': 'SYNCH',
             'break': '',
@@ -493,7 +491,8 @@ class parse_table:
             ':': '',
             'if': '',
             'else': '',
-            'while': [('while','T'), ('(','T'), ('Relational_Expression','NT'), (')','T'), ('Statements','NT')],
+            'while': [('while','T'), ('#label', 'AS'), ('(','T'), ('Relational_Expression','NT'), (')','T'),
+                      ('#save', 'AS'), ('Statements','NT'), ('#while', 'AS')],
             '==': '',
             '<': '',
             '+': '',
@@ -507,7 +506,7 @@ class parse_table:
             ';': '',
             'break': '',
             'continue': '',
-            'ID': [('Expression','NT'), ('Relop','NT'), ('Expression','NT')],
+            'ID': [('Expression','NT'), ('Relop','NT'), ('#relop_sign', 'AS'), ('Expression','NT'), ('#relop', 'AS')],
             '=': '',
             '[': '',
             ']': '',
@@ -527,7 +526,7 @@ class parse_table:
             '-': '',
             '*': '',
             '**': '',
-            'NUM': [('Expression','NT'), ('Relop','NT'), ('Expression','NT')],
+            'NUM': [('Expression','NT'), ('Relop','NT'), ('#relop_sign', 'AS'), ('Expression','NT'), ('#relop', 'AS')],
             '$': ''
         },
         'Relop': {
@@ -604,8 +603,8 @@ class parse_table:
             'while': '',
             '==': 'EPSILON',
             '<': 'EPSILON',
-            '+': [('+','T'), ('Term','NT'), ('Expression_Prime','NT')],
-            '-': [('-','T'), ('Term','NT'), ('Expression_Prime','NT')],
+            '+': [('+','T'), ('Term','NT'), ('#add', 'AS'), ('Expression_Prime','NT')],
+            '-': [('-','T'), ('Term','NT'), ('#sub', 'AS'), ('Expression_Prime','NT')],
             '*': '',
             '**': '',
             'NUM': '',
@@ -660,7 +659,7 @@ class parse_table:
             '<': 'EPSILON',
             '+': 'EPSILON',
             '-': 'EPSILON',
-            '*': [('*','T'), ('Factor','NT'), ('Term_Prime','NT')],
+            '*': [('*','T'), ('Factor','NT'), ('#mult','AS'),('Term_Prime','NT')],
             '**': '',
             'NUM': '',
             '$': ''
@@ -693,6 +692,7 @@ class parse_table:
             'NUM': [('Atom','NT'), ('Power','NT')],
             '$': ''
         },
+        #Power⟶ ** Factor #power
         'Power': {
             ';': [('Primary','NT')],
             'break': '',
@@ -716,7 +716,7 @@ class parse_table:
             '+': [('Primary','NT')],
             '-': [('Primary','NT')],
             '*': [('Primary','NT')],
-            '**': [('**','T'), ('Factor','NT')],
+            '**': [('**','T'), ('Factor','NT'), ('power', 'AS')],
             'NUM': '',
             '$': ''
         },
@@ -806,7 +806,7 @@ class parse_table:
             ';': 'SYNCH',
             'break': '',
             'continue': '',
-            'ID': [('ID','T')],
+            'ID': [('#pid', 'AS'), ('ID','T')],
             '=': '',
             '[': 'SYNCH',
             ']': 'SYNCH',
@@ -826,7 +826,7 @@ class parse_table:
             '-': 'SYNCH',
             '*': 'SYNCH',
             '**': 'SYNCH',
-            'NUM': [('NUM','T')],
+            'NUM': [('#pnum', 'AS'), ('NUM','T')],
             '$': ''
         }
     }
