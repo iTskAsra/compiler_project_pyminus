@@ -5,4 +5,4 @@ class symbol:
         self.symbol_type = symbol_type
 
     def __repr__(self) -> str:
-        return f'type: {self.symbol_type} --- name: {self.symbol_name} --- pointer: {self.stack_pointer}'
+        return f'type: {self.symbol_type} --- name: {self.symbol_name} --- pointer: {self.data_block_offset}'

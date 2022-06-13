@@ -24,7 +24,7 @@ valid_first = re.compile(r'if|else|continue|break|return|while|def')
 def write_code_to_file(address):
     with open(address, 'w') as f:
         for tac in code_generator.program_block:
-            f.write(f'{tac.opno}\t({tac.operation}, {tac.lhs}, {tac.rhs}, {tac.target})')
+            f.write(f'{tac.opno}\t({tac.operation}, {tac.lhs}, {tac.rhs}, {tac.target})\n')
 
 
 def truncate_utf8_chars(filename, count=1, ignore_newlines=False):

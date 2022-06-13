@@ -38,19 +38,17 @@ class CodeGenerator:
             '#assign': self.assign,
             '#relop': self.relop,
             '#func': self.func,
-            '#return': self.return_func
+            '#return': self.return_func,
+            '#function_end': self.function_end
         }
 
     def call_routine(self, routine, token=None):
+        print(self.semantic_stack)
         self.semantic_routines[routine]()
 
     def add_code_to_pb(self, operation, lhs, rhs, target):
         self.program_block.append(ThreeAddressCode(self.pb_pointer, operation, lhs, rhs, target))
         self.pb_pointer += 1
-
-    def find_token_address(self, token):
-        address = symbol_table.find_address(token)
-        return token_address  # return token address, not implemented!
 
     def pid(self):
         address = symbol_table.find_address(self.current_id)
@@ -160,5 +158,8 @@ class CodeGenerator:
         temp_ptr = self.temp_block_starting_point + self.temp_block_offset
         self.temp_block_offset += 1
         return temp_ptr
+
+    def function_end(self):
+        pass
 
     ##########################
