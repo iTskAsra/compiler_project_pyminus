@@ -20,7 +20,8 @@ class Stack:
     def peek(self, index):
         length = self.size() - 1
         if index <= length:
-            return self.stack[length - index]  # peek(2) -> return stack [top - 2]
+            index = -1 * index
+            return self.stack[length - index]  # peek(-2) -> return stack [top - 2]
 
     def clear(self):
         self.stack.clear()
@@ -39,11 +40,11 @@ class Stack:
 
 # test
 if __name__ == '__main__':
-    stack = Stack()
+    stack = Stack(0)
     stack.push(3)
     stack.push(6)
     stack.push(12)
     # 3, 6, 12
     # stack.clear()
     # stack.newScope()
-    print(stack.size())
+    print(stack.peek(-1))

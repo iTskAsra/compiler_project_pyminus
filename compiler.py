@@ -5,6 +5,7 @@ import scanner
 import parser
 
 #scanner.initiate_lexical_errors_file(scanner.lex_errors_address)
+scanner.initiate_symbol_table()
 scanner.get_input_stream_from_input(scanner.input_address)
 
 
@@ -15,6 +16,8 @@ if scanner.error_raised:
 #scanner.save_symbol_table(scanner.symbol_table_address)
 
 parser.initiate_parsing()
+for symbol in scanner.symbol_table.symbols:
+    print(symbol)
 #parser.save_syntax_errors(parser.syntax_errors_address)
 #parser.save_parsed_tree(parser.parsed_tree_address)
 #parser.truncate_utf8_chars(parser.parsed_tree_address)
