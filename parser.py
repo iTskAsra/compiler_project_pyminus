@@ -117,7 +117,6 @@ def initiate_parsing():
     children = []
     if token_popped:
         get_new_token()
-        # print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
     if get_token_type() in ['NUM', 'ID']:

@@ -1,5 +1,6 @@
 from stack import Stack
 from three_address_code import ThreeAddressCode
+from scanner import symbol_table
 
 
 class CodeGenerator:
@@ -37,6 +38,7 @@ class CodeGenerator:
             '#assign': self.assign,
             '#relop': self.relop,
             '#func': self.func,
+            '#return': self.return_func
         }
 
     def call_routine(self, routine, token=None):
@@ -47,11 +49,11 @@ class CodeGenerator:
         self.pb_pointer += 1
 
     def find_token_address(self, token):
-        token_address = token.address
+        address = symbol_table.find_address(token)
         return token_address  # return token address, not implemented!
 
     def pid(self):
-        address = self.find_address(self.current_id)
+        address = symbol_table.find_address(self.current_id)
         self.semantic_stack.append(address)
 
     def pnum(self):
@@ -74,7 +76,7 @@ class CodeGenerator:
 
     def jpf_save(self):
         i = len(self.program_block)
-        self.add_code_to_pb("JPF", self.semantic_stack.peek(-1), i, '')
+        self.add_code_to_pb("JPF", self.semantic_stack.pop(), i, '')
         self.semantic_stack.pop()
         self.semantic_stack.pop()
 
@@ -101,11 +103,11 @@ class CodeGenerator:
     def add(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        t = num1 + num2
+        t = self.get_temp()
         self.add_code_to_pb("ADD", num1, num2, t)
 
     def sub(self):
-        t = get_temp()
+        t = self.get_temp()
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
         t = num1 - num2
@@ -153,5 +155,10 @@ class CodeGenerator:
 
     def func(self):
         pass
+
+    def get_temp(self):
+        temp_ptr = self.temp_block_starting_point + self.temp_block_offset
+        self.temp_block_offset += 1
+        return temp_ptr
 
     ##########################
