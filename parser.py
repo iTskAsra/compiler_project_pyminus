@@ -3,6 +3,7 @@ import scanner
 import re
 import os
 from parsetable import parse_table
+from code_generator import CodeGenerator
 
 parsed_tree = Node("Program")
 token = []
@@ -14,6 +15,7 @@ current_line = 1
 token_popped = True
 errors_raised = False
 eop = False
+code_generator = CodeGenerator()
 
 valid_first = re.compile(r'if|else|continue|break|return|while|def')
 
