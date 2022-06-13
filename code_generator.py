@@ -1,4 +1,5 @@
 from stack import Stack
+from three_address_code import *
 
 
 class CodeGenerator:
@@ -16,6 +17,7 @@ class CodeGenerator:
         self.temp_block = Stack(500)
         self.semantic_stack = []
         self.program_block = []
+        self.pb_pointer = 0
 
         self.semantic_routines = {
             'pid': pid_func,
@@ -64,9 +66,7 @@ class CodeGenerator:
     def push_number(self):
         self.semantic_stack.append(f'#{self.current_number}')
 
-    def generate_formatted_code(self, relop: str,
-                                string1, string2, string3):
-        self.program_block.append(f'({relop}, {string1}, {string2}, {string3})')
+
 
     def insert_formatted_code(self, index: int, relop: str,
                               string1, string2, string3):
@@ -80,13 +80,10 @@ class CodeGenerator:
         pass
 
     def jp_func(self):
-        self.insert_formatted_code(
-            self.semantic_stack[-1],
-            "JP", len(self.program_block),
-            "",
-            ""
-        )
-        self.semantic_stack.pop()
+
+        jp_point = self.semantic_stack.pop()
+        tac = ThreeAddressCode(self.pb_pointer, 'JP', jp_point)
+        self.program_block.append(tac)
 
     def save_function(self):
         self.semantic_stack.append(len(self.program_block))
