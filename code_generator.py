@@ -1,5 +1,3 @@
-import enum
-
 from stack import Stack
 
 
