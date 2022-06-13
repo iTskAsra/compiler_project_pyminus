@@ -128,7 +128,13 @@ class CodeGenerator:
             i -= 1
 
     def assign(self):
-        self.add_code_to_pb("ASSIGN", self.semantic_stack.pop(), self.semantic_stack.pop(), '')
+        if self.is_variable_defined():
+            address = symbol_table.find_address(self.current_id)
+            self.semantic_stack.append(address)
+            self.add_code_to_pb("ASSIGN", self.semantic_stack.pop(), self.semantic_stack.pop(), '')
+
+    def is_variable_defined(self):
+        return symbol_table.find_address(self.current_id)
 
     def relop(self):
         # Relational_Expression⟶Expression Relop Expression #relop
