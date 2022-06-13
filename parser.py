@@ -16,8 +16,16 @@ token_popped = True
 errors_raised = False
 eop = False
 code_generator = CodeGenerator()
+output_address = 'output.txt'
 
 valid_first = re.compile(r'if|else|continue|break|return|while|def')
+
+
+def write_code_to_file(address):
+    with open(address, 'w') as f:
+        for tac in code_generator.program_block:
+            f.write(f'{tac.opno}\t({tac.operation}, {tac.lhs}, {tac.rhs}, {tac.target})')
+
 
 def truncate_utf8_chars(filename, count=1, ignore_newlines=False):
     """
@@ -101,6 +109,7 @@ def save_syntax_errors(address):
 
 parse_table = parse_table()
 
+
 def initiate_parsing():
     global token_popped, parsed_tree
     scanner.initiate_lexical_errors_file(scanner.lex_errors_address)
@@ -108,7 +117,7 @@ def initiate_parsing():
     children = []
     if token_popped:
         get_new_token()
-        #print(f'new token is: {get_token()}: {get_token_type()}')
+        # print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
     if get_token_type() in ['NUM', 'ID']:
@@ -139,13 +148,14 @@ def parse_diagram(element):
         print(f'new token is: {get_token()}: {get_token_type()}')
         token_popped = False
 
-
     if element == 'EPSILON':
         return Node('epsilon')
 
     if element[1] == 'AS':
         pass
-        code_gen.call()
+        code_generator.call_routine(element[0])
+        print(f'generated code for {element[0]}')
+        return
 
     diagram_node = Node(f'{element[0]}')
 
@@ -172,8 +182,8 @@ def parse_diagram(element):
                     print(get_token())
                 return None
 
-    if get_token_type() in ['NUM','ID']:
-        parser_result = parse_table.parse(element[0],get_token_type())
+    if get_token_type() in ['NUM', 'ID']:
+        parser_result = parse_table.parse(element[0], get_token_type())
     else:
         parser_result = parse_table.parse(element[0], get_token())
 
@@ -193,7 +203,7 @@ def parse_diagram(element):
             update_syntax_errors(get_token_line(), 'Unexpected EOF', '')
             eop = True
             return None
-        if get_token_type() in ['ID','NUM']:
+        if get_token_type() in ['ID', 'NUM']:
             update_syntax_errors(get_token_line(), get_token_type(), 'illegal')
         else:
             update_syntax_errors(get_token_line(), get_token(), 'illegal')

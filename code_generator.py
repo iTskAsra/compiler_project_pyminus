@@ -10,7 +10,6 @@ class CodeGenerator:
         self.current_function = None
         self.current_symbol = None
         self.symbol_stack = []
-        self.stack = Stack()
         self.memory_address = []
         self.memory_temp = []
         self.data_block_starting_point = 5000
@@ -22,24 +21,25 @@ class CodeGenerator:
         self.pb_pointer = 0
 
         self.semantic_routines = {
-            'pid': pid,
-            'pnum': pnum,
-            'label': label,
-            'relop_sign': relop_sign,
-            'jpf_save': jpf_save,
-            'save': save,
-            'jp': jp,
-            'jpf': jpf,
-            'while': while_func,
-            'add': add,
-            'sub': sub,
-            'mult': mult,
-            'power': power,
-            'assign': assign,
-            'relop': relop
+            '#pid': self.pid,
+            '#pnum': self.pnum,
+            '#label': self.label,
+            '#relop_sign': self.relop_sign,
+            '#jpf_save': self.jpf_save,
+            '#save': self.save,
+            '#jp': self.jp,
+            '#jpf': self.jpf,
+            '#while': self.while_func,
+            '#add': self.add,
+            '#sub': self.sub,
+            '#mult': self.mult,
+            '#power': self.power,
+            '#assign': self.assign,
+            '#relop': self.relop,
+            '#func': self.func,
         }
 
-    def call_routine(self, routine, token):
+    def call_routine(self, routine, token=None):
         self.semantic_routines[routine]()
 
     def add_code_to_pb(self, operation, lhs, rhs, target):
@@ -151,8 +151,7 @@ class CodeGenerator:
     def return_func(self):
         return_value = self.semantic_stack.pop()
 
+    def func(self):
+        pass
+
     ##########################
-
-
-
-
