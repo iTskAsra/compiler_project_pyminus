@@ -159,6 +159,13 @@ class CodeGenerator:
         num1 = self.semantic_stack.pop()  # num2 ^ num1
         num2 = self.semantic_stack.pop()
         temp = num1
+        while temp > 0:
+            self.semantic_stack.append(num2)
+            self.semantic_stack.append(num2)
+            self.while_func()
+            self.mult()
+            temp -= 1
+
 
 
 
