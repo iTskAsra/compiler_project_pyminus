@@ -2,7 +2,7 @@ import imp
 from stack import Stack
 from three_address_code import ThreeAddressCode
 from scanner import symbol_table
-from parser import token
+# from parser import token
 
 
 class CodeGenerator:
@@ -23,6 +23,7 @@ class CodeGenerator:
         self.program_block = []
         self.pb_pointer = 0
         self.array_len = 0
+        self.token = None
 
         self.semantic_routines = {
             '#pid': self.pid,
@@ -45,7 +46,8 @@ class CodeGenerator:
             '#function_end': self.function_end
         }
 
-    def call_routine(self, routine, token=None):
+    def call_routine(self, routine, token):
+        self.token = token
         print(self.semantic_stack)
         self.semantic_routines[routine]()
 

@@ -151,8 +151,7 @@ def parse_diagram(element):
         return Node('epsilon')
 
     if element[1] == 'AS':
-        pass
-        code_generator.call_routine(element[0])
+        code_generator.call_routine(element[0], token)
         print(f'generated code for {element[0]}')
         return
 
