@@ -7,7 +7,7 @@ class symbol:
         self.address_assigned = False
 
     def __repr__(self) -> str:
-        return f'type: {self.symbol_type} --- name: {self.symbol_name} --- pointer: {self.data_block_offset}'
+        return f'type: {self.symbol_type} --- name: {self.symbol_name} --- pointer: {self.data_block_address}'
 
     def has_valid_address(self):
         return self.address_assigned

@@ -22,7 +22,7 @@ class symbol_table:
     def find_address(self, symbol_name):
         for s in self.symbols:
             if s.symbol_name == symbol_name:
-                return s.data_block_offset
+                return s.data_block_address
 
 
     def symbol_has_address(self, symbol_name):

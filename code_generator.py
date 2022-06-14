@@ -61,15 +61,16 @@ class CodeGenerator:
         return address
     
     def pid(self):
-        if not self.is_variable_defined(token[1]):
-            address = self.get_new_variable_address()
-            symbol_table.set_symbol_address(token[1], address)
 
-        address = symbol_table.find_address(token[1])
+        if not self.is_variable_defined():
+            address = self.get_new_variable_address()
+            symbol_table.set_symbol_address(self.token[1], address)
+
+        address = symbol_table.find_address(self.token[1])
         self.semantic_stack.append(address)
 
     def pnum(self):
-        self.semantic_stack.append({f'#{token[1]}'})
+        self.semantic_stack.append(f'#{self.token[1]}')
 
     def relop_sign(self):
         self.semantic_stack.append(self.current_symbol)  ######################### to check
@@ -115,11 +116,12 @@ class CodeGenerator:
     def add(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        if not num1.startwith('#'):
+        print(num1)
+        if isinstance(num1, str) and not num1[0] == '#':
             var1 = symbol_table.find_address(num1)
         else:
             var1 = num1
-        if not num2.startwith('#'):
+        if isinstance(num2, str) and not num2[0] == '#':
             var2 = symbol_table.find_address(num2)
         else:
             var2 = num2
@@ -182,7 +184,7 @@ class CodeGenerator:
 
 
     def is_variable_defined(self):
-        return symbol_table.symbol_has_address(token[1])
+        return symbol_table.symbol_has_address(self.token[1])
 
     def relop(self):
         # Relational_Expression⟶Expression Relop Expression #relop
