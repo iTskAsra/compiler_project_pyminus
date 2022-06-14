@@ -22,6 +22,7 @@ class CodeGenerator:
         self.semantic_stack = []
         self.program_block = []
         self.pb_pointer = 0
+        self.array_len = 0
 
         self.semantic_routines = {
             '#pid': self.pid,
@@ -66,7 +67,7 @@ class CodeGenerator:
         self.semantic_stack.append(address)
 
     def pnum(self):
-        self.semantic_stack.append(token[1])
+        self.semantic_stack.append({f'#{token[1]}'})
 
     def relop_sign(self):
         self.semantic_stack.append(self.current_symbol)  ######################### to check
@@ -101,7 +102,7 @@ class CodeGenerator:
         self.semantic_stack.pop()
 
     def while_func(self):  #####is it true? idk
-        i = len(self.program_block)
+        i = self.pb_pointer
         self.add_code_to_pb("JPF", self.semantic_stack.pop(), i, '')  # i+1
         self.program_block.insert(i, ThreeAddressCode("JP", self.semantic_stack.pop(), '', ''))
         i += 1
@@ -112,13 +113,29 @@ class CodeGenerator:
     def add(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
+        if not num1.startwith('#'):
+            var1 = symbol_table.find_address(num1)
+        else:
+            var1 = num1
+        if not num2.startwith('#'):
+            var2 = symbol_table.find_address(num2)
+        else:
+            var2 = num2
         t = self.get_temp()
-        self.add_code_to_pb("ADD", num1, num2, t)
+        self.add_code_to_pb("ADD", var1, var2, t)
         self.semantic_stack.append(t)
 
     def sub(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
+        if not num1.startwith('#'):
+            var1 = symbol_table.find_address(num1)
+        else:
+            var1 = num1
+        if not num2.startwith('#'):
+            var2 = symbol_table.find_address(num2)
+        else:
+            var2 = num2
         t = self.get_temp()
         self.add_code_to_pb("SUB", num1, num2, t)
         self.semantic_stack.append(t)
@@ -126,6 +143,14 @@ class CodeGenerator:
     def mult(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
+        if not num1.startwith('#'):
+            var1 = symbol_table.find_address(num1)
+        else:
+            var1 = num1
+        if not num2.startwith('#'):
+            var2 = symbol_table.find_address(num2)
+        else:
+            var2 = num2
         t = self.get_temp()
         self.add_code_to_pb("MULT", num1, num2, t)
         self.semantic_stack.append(t)
@@ -133,7 +158,8 @@ class CodeGenerator:
     def power(self):
         num1 = self.semantic_stack.pop()  # num2 ^ num1
         num2 = self.semantic_stack.pop()
-        temp = self.get_temp()
+        temp = num1
+
 
 
     def assign(self):
@@ -141,6 +167,10 @@ class CodeGenerator:
             address = symbol_table.find_address(self.current_id)
             self.semantic_stack.append(address)
             self.add_code_to_pb("ASSIGN", self.semantic_stack.pop(), self.semantic_stack.pop(), '')
+
+    def array_element(self):
+        self.array_len += 1
+
 
     def is_variable_defined(self):
         return symbol_table.symbol_has_address(token[1])

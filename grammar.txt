@@ -17,7 +17,8 @@ B⟶= C #assign
 B⟶[ Expression ] = C #assign_arr
 B⟶( Arguments )
 C⟶Expression
-C⟶[ Expression List_Rest ]
+#add array element tag
+C⟶[ Expression #array_element List_Rest ]
 List_Rest⟶, Expression List_Rest
 List_Rest⟶
 Return_stmt⟶return Return_Value #return
