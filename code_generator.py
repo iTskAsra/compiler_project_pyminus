@@ -1,6 +1,8 @@
+import imp
 from stack import Stack
 from three_address_code import ThreeAddressCode
 from scanner import symbol_table
+from parser import token
 
 
 class CodeGenerator:
@@ -50,12 +52,21 @@ class CodeGenerator:
         self.program_block.append(ThreeAddressCode(self.pb_pointer, operation, lhs, rhs, target))
         self.pb_pointer += 1
 
+    def get_new_variable_address(self):
+        address = (self.data_block_offset * 4) + self.data_block_starting_point
+        self.data_block_offset += 1
+        return address
+    
     def pid(self):
-        address = symbol_table.find_address(self.current_id)
+        if not self.is_variable_defined(token[1]):
+            address = self.get_new_variable_address()
+            symbol_table.set_symbol_address(token[1], address)
+
+        address = symbol_table.find_address(token[1])
         self.semantic_stack.append(address)
 
     def pnum(self):
-        self.semantic_stack.append(self.current_number)
+        self.semantic_stack.append(token[1])
 
     def relop_sign(self):
         self.semantic_stack.append(self.current_symbol)  ######################### to check
@@ -64,7 +75,7 @@ class CodeGenerator:
         self.program_block.append('')
 
     def label(self):
-        line = len(self.program_block)
+        line = self.pb_pointer
         self.semantic_stack.append(line)
         self.reserve_pb()
 
@@ -103,29 +114,27 @@ class CodeGenerator:
         num2 = self.semantic_stack.pop()
         t = self.get_temp()
         self.add_code_to_pb("ADD", num1, num2, t)
+        self.semantic_stack.append(t)
 
     def sub(self):
-        t = self.get_temp()
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        t = num1 - num2
+        t = self.get_temp()
         self.add_code_to_pb("SUB", num1, num2, t)
+        self.semantic_stack.append(t)
 
     def mult(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        t = num1 * num2
+        t = self.get_temp()
         self.add_code_to_pb("MULT", num1, num2, t)
+        self.semantic_stack.append(t)
 
     def power(self):
         num1 = self.semantic_stack.pop()  # num2 ^ num1
         num2 = self.semantic_stack.pop()
-        i = num1
-        while i > 0:
-            self.semantic_stack.append(num2)
-            self.semantic_stack.append(num2)
-            self.mult()
-            i -= 1
+        temp = self.get_temp()
+
 
     def assign(self):
         if self.is_variable_defined():
@@ -134,7 +143,7 @@ class CodeGenerator:
             self.add_code_to_pb("ASSIGN", self.semantic_stack.pop(), self.semantic_stack.pop(), '')
 
     def is_variable_defined(self):
-        return symbol_table.find_address(self.current_id)
+        return symbol_table.symbol_has_address(token[1])
 
     def relop(self):
         # Relational_Expression⟶Expression Relop Expression #relop
@@ -161,7 +170,7 @@ class CodeGenerator:
         pass
 
     def get_temp(self):
-        temp_ptr = self.temp_block_starting_point + self.temp_block_offset
+        temp_ptr = self.temp_block_starting_point + (self.temp_block_offset * 4)
         self.temp_block_offset += 1
         return temp_ptr
 

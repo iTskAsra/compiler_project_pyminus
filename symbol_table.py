@@ -23,3 +23,15 @@ class symbol_table:
         for s in self.symbols:
             if s.symbol_name == symbol_name:
                 return s.data_block_offset
+
+
+    def symbol_has_address(self, symbol_name):
+        for s in self.symbols:
+            if s.symbol_name == symbol_name:
+                return s.has_valid_address()
+
+
+    def set_symbol_address(self, symbol_name, address):
+        for s in self.symbols:
+            if s.symbol_name == symbol_name:
+                s.data_block_address = address
