@@ -132,31 +132,33 @@ class CodeGenerator:
     def sub(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        if not num1.startwith('#'):
+        print(num1)
+        if isinstance(num1, str) and not num1[0] == '#':
             var1 = symbol_table.find_address(num1)
         else:
             var1 = num1
-        if not num2.startwith('#'):
+        if isinstance(num2, str) and not num2[0] == '#':
             var2 = symbol_table.find_address(num2)
         else:
             var2 = num2
         t = self.get_temp()
-        self.add_code_to_pb("SUB", num1, num2, t)
+        self.add_code_to_pb("SUB", var1, var2, t)
         self.semantic_stack.append(t)
 
     def mult(self):
         num1 = self.semantic_stack.pop()
         num2 = self.semantic_stack.pop()
-        if not num1.startwith('#'):
+        print(num1)
+        if isinstance(num1, str) and not num1[0] == '#':
             var1 = symbol_table.find_address(num1)
         else:
             var1 = num1
-        if not num2.startwith('#'):
+        if isinstance(num2, str) and not num2[0] == '#':
             var2 = symbol_table.find_address(num2)
         else:
             var2 = num2
         t = self.get_temp()
-        self.add_code_to_pb("MULT", num1, num2, t)
+        self.add_code_to_pb("MULT", var1, var2, t)
         self.semantic_stack.append(t)
 
     def power(self):
@@ -169,8 +171,6 @@ class CodeGenerator:
             self.while_func()
             self.mult()
             temp -= 1
-
-
 
 
     def assign(self):
